@@ -1,5 +1,9 @@
 # jena-weather-anomalies
 
+[![CI](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/ci.yml/badge.svg)](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/ci.yml)
+[![Docker](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/docker.yml/badge.svg)](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/docker.yml)
+[![Report](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/report.yml/badge.svg)](https://github.com/Kiranpjk/jena-weather-anomalies/actions/workflows/report.yml)
+
 Anomaly detection and forecasting baselines on **real hourly weather data for Jena, Germany**
 (Open-Meteo archive API, 2023-2024, 17,544 hours of temperature and 10 m wind speed).
 Built as a small, tested time-series project: data cleaning, a robust seasonal detector, a walk-forward backtest, CI and Docker.
@@ -16,9 +20,32 @@ Built as a small, tested time-series project: data cleaning, a robust seasonal d
 pip install -e ".[dev]"
 python -m jena_anomalies.cli fetch      # optional: re-download data/jena_hourly.csv
 python -m jena_anomalies.cli report
+python -m jena_anomalies.cli report --html site/index.html   # same report as a static HTML page
 pytest -q
-docker build -t jena-anomalies . && docker run --rm jena-anomalies
 ```
+
+`make install`, `make lint`, `make test`, `make report` and `make docker` wrap the same commands.
+Optional: `pip install pre-commit && pre-commit install` runs ruff before each commit.
+
+## Run with Docker
+
+```bash
+docker build -t jena-anomalies . && docker run --rm jena-anomalies
+# or the image built by CI:
+docker run --rm ghcr.io/kiranpjk/jena-weather-anomalies:latest
+```
+
+The image runs as a non-root user and contains the committed data file, so it needs no network.
+
+## CI/CD
+
+All in GitHub Actions (`.github/workflows/`):
+
+- **ci.yml**: on every push to `main` and every pull request: `ruff check` and `pytest` on Python 3.10 and 3.12, with pip caching.
+- **docker.yml**: on push to `main`: builds the Dockerfile and pushes `ghcr.io/kiranpjk/jena-weather-anomalies` tagged `latest` and the commit SHA, using the built-in `GITHUB_TOKEN`.
+- **report.yml**: weekly (Monday) and on manual dispatch: runs the report on the committed CSV (no network fetch) and deploys the HTML to GitHub Pages.
+  Pages has to be enabled once: **Settings → Pages → Source: GitHub Actions**.
+- **Dependabot** checks pip dependencies and GitHub Actions versions weekly.
 
 ## Results on the real data (24 h horizon, 1,440 forecast hours)
 

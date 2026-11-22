@@ -27,7 +27,7 @@ jobs:
       - run: pip install .
       # Builds from the committed data/jena_hourly.csv; no network fetch in CI.
       - run: mkdir -p site && python -m jena_anomalies.cli report --html site/index.html
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
 

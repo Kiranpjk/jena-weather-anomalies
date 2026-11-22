@@ -1,0 +1,16 @@
+[project]
+name = "jena-anomalies"
+version = "0.1.0"
+description = "Anomaly detection and forecasting baselines on hourly Jena weather data (Open-Meteo)"
+requires-python = ">=3.10"
+dependencies = ["numpy", "pandas"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

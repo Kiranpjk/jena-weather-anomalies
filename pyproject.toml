@@ -6,7 +6,7 @@ requires-python = ">=3.10"
 dependencies = ["numpy", "pandas"]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "ruff"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
